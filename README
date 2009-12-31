@@ -1,0 +1,28 @@
+The goal of this project is to provide support for using electronic USB drum
+kits designed for the Rock Band series of games as MIDI devices.
+
+Currently only the Playstation 3 version of the Ion Drum Rocker peripheral is
+supported. Support for other types of devices will be added when I can get my
+hands on data describing how they talk over the USB bus (send me an email if
+you have an unsupported device that you'd like to have supported).
+
+The only currently supported platform is Linux (using ALSA). However, if you
+have the need to support other platforms, additional output mechanism are easy
+to write.
+
+
+How to use:
+
+Most devices pretend to be a normal HID (human interface device). However, they
+somewhat abuse the HID protocol, so simply converting HID events to MIDI events
+won't do the job.
+
+The devices claiming to support HID causes the usbhid driver to attach to them.
+Given that the devices don't really speak HID, the driver needs to unbind:
+
+  echo $dev_id > /sys/bus/usb/drivers/usbhid/unbind
+  ($dev_id is something like 3-1:1.0)
+
+Now the device node can be accessed directly, you can run the 'rimshot' binary
+you compiled using 'make'. You will need permission to read from and write to
+the usb device nodes.
